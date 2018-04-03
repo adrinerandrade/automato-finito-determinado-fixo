@@ -33,9 +33,18 @@
         construirResultado(resultado);
     }
 
+    App.limpar = function() {
+        document.getElementById('content').value = '';
+    }
+
 
     function construirResultado(resultado) {
-
+        resultado.forEach(linha => {
+            linha.elementos.forEach(palavra => {
+                var x = App.processarPalavra(palavra);
+                console.log(x);
+            });
+        });
     }
 
 })();
