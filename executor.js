@@ -21,7 +21,7 @@
 
     App.limpar = function() {
         document.getElementById('content').value = '';
-        imparTabela();
+        limparTabela();
     }
 
     App.exibirInformacoes = function() {

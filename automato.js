@@ -16,7 +16,6 @@
     PALAVRA_INVALIDA: 'PALAVRA_INVALIDA'
   }
 
-
   var estados = [];
   function processarPalavra(palavra) {
     estados = [];
@@ -31,6 +30,7 @@
         statusPalavra: STATUS_PALAVRA.PALAVRA_VALIDA
       } 
     } catch (error) {
+      estados.push('qErro');
       if(error === ERRORS.PALAVRA_INVALIDA) 
         return {statusPalavra: STATUS_PALAVRA.PALAVRA_INVALIDA, estados}
       else if(error === ERRORS.SIMBOLO_INVALIDO)
