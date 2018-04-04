@@ -2,21 +2,45 @@
 
   window.App = window.App || {};
 
+  var STATUS_PALAVRA = {
+    PALAVRA_VALIDA: 'palavra válida',
+    SIMBOLO_ESPECIAL: 'simbolo especial',
+    SIMBOLO_INVALIDO: 'erro: simbolo(s) inválido(s)',
+    PALAVRA_INVALIDA: 'erro: palavra inválida'
+  }
+
+  window.App.STATUS_PALAVRA = STATUS_PALAVRA;
+  
   var ERRORS = {
-    CARACTERE_INVALIDO: 'CARACTERE_INVALIDO',
+    SIMBOLO_INVALIDO: 'SIMBOLO_INVALIDO',
     PALAVRA_INVALIDA: 'PALAVRA_INVALIDA'
   }
 
+
   var estados = [];
   function processarPalavra(palavra) {
+    estados = [];
+
+    if(ehSimboloEspecial(palavra))
+      return {statusPalavra: STATUS_PALAVRA.SIMBOLO_ESPECIAL}
+
     try {
-      estados = [];
       q0(palavra);
-      return estados;
+      return {
+        estados,
+        statusPalavra: STATUS_PALAVRA.PALAVRA_VALIDA
+      } 
     } catch (error) {
-      console.log(error);
+      if(error === ERRORS.PALAVRA_INVALIDA) 
+        return {statusPalavra: STATUS_PALAVRA.PALAVRA_INVALIDA, estados}
+      else if(error === ERRORS.SIMBOLO_INVALIDO)
+        return {statusPalavra: STATUS_PALAVRA.SIMBOLO_INVALIDO, estados}
     }
-  };  
+  };
+
+  function ehSimboloEspecial(palavra) {
+    return [';', ',', '='].some(s => s === palavra);
+  }
 
   function q0(palavra, index = 0) {
     estados.push('q0');
@@ -29,7 +53,7 @@
       return q4q7q9(palavra, ++index);
     }
 
-    throw new Error(ERRORS.PALAVRA_INVALIDA);
+    throw (ERRORS.PALAVRA_INVALIDA);
   };
 
   function q1q2(palavra, index) {
@@ -38,7 +62,7 @@
     if (palavra[index] == 'a') {
       return q0q3(palavra, ++index);
     } else if (palavra[index] == 'b' || palavra[index] == 'c') {
-      throw new Error(ERRORS.PALAVRA_INVALIDA);
+      throw (ERRORS.PALAVRA_INVALIDA);
     }
   };
 
@@ -47,11 +71,13 @@
     validaCaractere(palavra, index);
     if (palavra[index] == 'a') {
       return q1q2(palavra, ++index);
+    } else if (palavra[index] == 'b') {
+      return q5q6q8(palavra, ++index);
     } else if (palavra[index] == 'c') {
       return q4q7q9(palavra, ++index);
     } 
 
-    throw new Error(ERRORS.PALAVRA_INVALIDA);
+    throw (ERRORS.PALAVRA_INVALIDA);
   };
 
   function q5q6q8(palavra, index) {
@@ -64,6 +90,8 @@
     } else if (palavra[index] == 'c') {
       return q4q7q9(palavra, ++index);
     }
+
+    throw (ERRORS.PALAVRA_INVALIDA);
   };
 
   function q4q7q9(palavra, index) {
@@ -76,6 +104,8 @@
     } else if (palavra[index] == 'c') {
       return q4(palavra, ++index);
     }
+
+    throw (ERRORS.PALAVRA_INVALIDA);
   };
 
   function q2(palavra, index) {
@@ -84,7 +114,7 @@
     if (palavra[index] == 'a') {
       return q3(palavra, ++index);
     } else if (palavra[index] == 'b' || palavra[index] == 'c') {
-      throw new Error(ERRORS.PALAVRA_INVALIDA);
+      throw (ERRORS.PALAVRA_INVALIDA);
     }
 
   };
@@ -93,10 +123,10 @@
     estados.push('q3');
     validaCaractere(palavra, index);
     if (palavra[index] == 'a') {
-      return q3(palavra, ++index);
+      return q2(palavra, ++index);
     }
 
-    throw new Error(ERRORS.PALAVRA_INVALIDA);
+    throw (ERRORS.PALAVRA_INVALIDA);
   };
 
   function q4(palavra, index) {
@@ -120,7 +150,7 @@
       return q4(palavra, ++index);
     }
 
-    throw new Error(ERRORS.PALAVRA_INVALIDA);
+    throw (ERRORS.PALAVRA_INVALIDA);
   };
 
   function q8(palavra, index) {
@@ -144,7 +174,7 @@
       return q8(palavra, ++index);
     } 
 
-    throw new Error(ERRORS.PALAVRA_INVALIDA);
+    throw (ERRORS.PALAVRA_INVALIDA);
   };
 
   function validaCaractere(palavra, index) {
@@ -152,7 +182,7 @@
        palavra[index] == 'b' || 
        palavra[index] == 'c' ||
        palavra[index] == undefined) return;
-    throw new Error(ERRORS.CARACTERE_INVALIDO)
+    throw (ERRORS.SIMBOLO_INVALIDO)
   }
 
 

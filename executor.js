@@ -7,7 +7,6 @@
     }
 
     App.executar = function executar() {
-        document.getElementById('result').innerHTML = '';
         var lines = document.getElementById('content').value.split('\n');
 
         var resultado = [];
@@ -17,34 +16,71 @@
                 elementos: App.processar(lines[i])
             });
         }
-        /** TODO
-         *  Processar cada palavra, e ver se a saída é válida
-         */
-        console.log(resultado);
-        /**
-            * resultado: [{
-            *  linha: int
-            *  elementos: [
-            *   ...string
-            *  ]
-            * }]
-        */
-
         construirResultado(resultado);
     }
 
     App.limpar = function() {
         document.getElementById('content').value = '';
+        imparTabela();
     }
 
+    App.exibirInformacoes = function() {
+        $('#equipe').toggle();
+    }
+
+    function limparTabela() {
+        $('#table-body').children().remove();
+        inserirLinhaTabela();
+        inserirLinhaTabela();
+        inserirLinhaTabela();
+        inserirLinhaTabela();
+    }
+
+    function inserirLinhaTabela(valor, index) {
+        if (valor) {
+            document.getElementById('table-body')
+                .insertRow(index).innerHTML = `
+                    <tr>
+                        <td>${valor.linha + 1}</td>
+                        <td>${valor.statusPalavra}</td>
+                        <td>${valor.palavra}</td>
+                        <td>${valor.estados ? valor.estados.join(' ,'): ''}</td>
+                    </tr>
+                `;
+        } else {
+            document.getElementById('table-body')
+                .insertRow(-1).innerHTML = `
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                `;
+        }
+    }
 
     function construirResultado(resultado) {
-        resultado.forEach(linha => {
-            linha.elementos.forEach(palavra => {
-                var x = App.processarPalavra(palavra);
-                console.log(x);
+        limparTabela();
+        resultados = []
+        resultado.forEach(r => {
+            r.elementos.forEach(palavra => {
+                var valorProcessado = App.processarPalavra(palavra);
+                resultados.push({
+                    ...valorProcessado,
+                    palavra,
+                    linha: r.linha
+                });                    
             });
         });
-    }
 
+        if(resultados.length > 0) {
+            resultados.forEach((valor, index) => {
+                if(index < 4) {
+                    document.getElementById('table-body').deleteRow(-1);
+                }
+                inserirLinhaTabela(valor, index);
+            })
+        }
+    }
 })();
